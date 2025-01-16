@@ -18,9 +18,13 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final int LB = 1;
-    public static final int LF = 0;
-    public static final int RB = 3;
-    public static final int RF = 2;
+    public static final int RB = 3; // Right back motor
+    public static final int RF = 2; // Right front motor
+    public static final int LB = 1; // Left back motor
+    public static final int LF = 0; // Left front motor
+  }
+  public static class ElevatorConstants {
+    public static final int E1 = 4; // Elevator motor #1
+    public static final int E2 = 5; // Elevator motor #2
   }
 }
