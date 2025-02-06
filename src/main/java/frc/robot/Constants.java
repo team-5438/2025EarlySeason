@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import frc.robot.utils.StickDeadband;
+
+import edu.wpi.first.math.util.Units;
+import frc.robot.utils.Controller;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -13,7 +18,14 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+  public static class OperatorConstants {}
+
+  public static final Controller Driver = new Controller(
+    /* NOTE: this is a Xbox Controller */
+    0, /* id */
+    new StickDeadband(0.1, 0.1), /* left stick deadband */
+    new StickDeadband(0.1, 0.1)); /* right stick deadband */
+
+
+  public static final double MAX_SPEED  = 4.5; //in meters/sec
 }
