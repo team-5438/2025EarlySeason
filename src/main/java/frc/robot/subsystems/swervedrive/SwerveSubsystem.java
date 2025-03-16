@@ -26,6 +26,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -120,10 +121,8 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.stopOdometryThread();
     }
 
-    Encoder thriftyEncoder0 = new Encoder(0, 1);
-    SmartDashboard.putData("sigma", thriftyEncoder0);
-
-    //setupPathPlanner();
+    setupPathPlanner();
+    //swerveDrive.setGyroOffset(Constants.gyroOffset);
   }
 
   /**
@@ -148,12 +147,12 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
-    // When vision is enabled we must manually update odometry in SwerveDrive
-    // if (visionDriveTest)
-    // {
-    //   swerveDrive.updateOdometry();
-    //   vision.updatePoseEstimation(swerveDrive);
-    // }
+    //When vision is enabled we must manually update odometry in SwerveDrive
+    if (visionDriveTest)
+    {
+      swerveDrive.updateOdometry();
+      vision.updatePoseEstimation(swerveDrive);
+    }
   }
 
   @Override
@@ -164,7 +163,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Setup AutoBuilder for PathPlanner.
    */
-  /*public void setupPathPlanner()
+  public void setupPathPlanner()
   {
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -230,7 +229,7 @@ public class SwerveSubsystem extends SubsystemBase
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
-  }*/
+  }
 
   /**
    * Aim the robot at the target returned by PhotonVision.

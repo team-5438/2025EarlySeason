@@ -52,28 +52,28 @@ public class Vision
   /**
    * April Tag Field Layout of the year.
    */
-  public static final AprilTagFieldLayout fieldLayout                     = AprilTagFieldLayout.loadField(
+  public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(
       AprilTagFields.kDefaultField);
   /**
    * Ambiguity defined as a value between (0,1). Used in {@link Vision#filterPose}.
    */
-  private final       double              maximumAmbiguity                = 0.25;
+  private final double maximumAmbiguity = 0.25;
   /**
    * Photon Vision Simulation
    */
-  public              VisionSystemSim     visionSim;
+  public VisionSystemSim visionSim;
   /**
    * Count of times that the odom thinks we're more than 10meters away from the april tag.
    */
-  private             double              longDistangePoseEstimationCount = 0;
+  private double longDistangePoseEstimationCount = 0;
   /**
    * Current pose from the pose estimator using wheel odometry.
    */
-  private             Supplier<Pose2d>    currentPose;
+  private Supplier<Pose2d> currentPose;
   /**
    * Field from {@link swervelib.SwerveDrive#field}
    */
-  private             Field2d             field2d;
+  private Field2d field2d;
 
 
   /**
