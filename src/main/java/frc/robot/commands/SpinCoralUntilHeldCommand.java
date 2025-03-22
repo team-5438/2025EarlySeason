@@ -26,20 +26,20 @@ public class SpinCoralUntilHeldCommand extends Command {
   @Override
   public void execute() {
     //coralSubsystem.coralSpinnyRight.set(speed);
-    coralSubsystem.coralSpinnyLeft.set(speed);
+    //coralSubsystem.coralSpinny.set(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     //coralSubsystem.coralSpinnyRight.set(0);
-    coralSubsystem.coralSpinnyLeft.set(0);
+    //coralSubsystem.coralSpinny.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(coralSubsystem.holdingCoralLeft){
+    if(coralSubsystem.coralDetectorValue){
       return true;
     } else return false;
   }

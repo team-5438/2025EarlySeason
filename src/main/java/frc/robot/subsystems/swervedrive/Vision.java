@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
 import java.awt.Desktop;
@@ -75,6 +76,7 @@ public class Vision
    */
   private Field2d field2d;
 
+  int targetID;
 
   /**
    * Constructor for the Vision class.
@@ -120,6 +122,77 @@ public class Vision
       throw new RuntimeException("Cannot get AprilTag " + aprilTag + " from field " + fieldLayout.toString());
     }
 
+  }
+
+  /*
+   * isValidTargetFor Scoring: is this a valid target to score on?
+   * Target must be within a sight of the robot and a valid target
+   * for our alliance
+   */
+  public boolean isValidTargetForScoring(int targetAprilTag){
+    //look up the target & verify it is valid for our alliance
+    //Blue Alliance reef tags = 17, 18, 19, 20, 21, 22
+    //Red Alliance reef tags = 6, 7, 8, 9, 10, 11
+    var alliance = DriverStation.getAlliance();
+    if (!alliance.isPresent()){ return false;}
+      
+    if ((targetAprilTag >= 17 && targetAprilTag <= 22) && 
+          alliance.get() == DriverStation.Alliance.Blue){
+       return true;
+    }
+    if ((targetAprilTag >= 6 && targetAprilTag <= 11) && 
+          alliance.get() == DriverStation.Alliance.Red){
+        return true;
+    }
+    return false;
+  }
+  //find the latest targets april tag id from the camera
+  //if no target return 0
+  public int getCamerasTargetID(Cameras camera){
+    PhotonTrackedTarget target;
+
+    System.out.println("Vision:getCamerasTargetID: Check Camera");
+    var results = camera.getLatestResult();
+    if (!results.isEmpty()){
+      var result = results.orElse(null);
+      if (result == null) return(0);
+      if (result.hasTargets()){
+         System.out.println("   Camera found a result target");
+         target = result.getBestTarget();
+         System.out.println("   Camera found a best target getting ID");
+         return(target.getFiducialId());
+      }
+    }
+    return(0);
+  }
+  /*
+   * get best Reef Target from the front 2 cameras
+   * only return a target if it is on the same reef as our alliance
+   */
+  public int getBestReefTarget()
+  {
+    for (Cameras camera : Cameras.values()){
+      if (camera.equals(Cameras.LEFT_CAM)){
+
+        System.out.println("Vision:GetBestReefTarget: Check FrontLeft Camera");
+        targetID = getCamerasTargetID(camera);
+        
+        if (isValidTargetForScoring(targetID)){
+          System.out.println("  Return frontLeftTarget ID:" + targetID);
+          return(targetID);
+        }
+      }
+      if (camera.equals(Cameras.RIGHT_CAM)){
+        System.out.println("Vision:GetBestReefTarget: Check FrontRight Camera");
+        targetID = getCamerasTargetID(camera);
+        if (isValidTargetForScoring(targetID)){
+          System.out.println("  Return frontRightTarget ID:" + targetID);
+          return(targetID);
+        }
+      }
+    }
+    System.out.println("Vision:GetBestReefTarget: NO APRIL TAG TARGET FOUND return 0");
+    return(0);
   }
 
   /**
@@ -352,16 +425,7 @@ public class Vision
               new Translation3d(Units.inchesToMeters(12.056),
                                 Units.inchesToMeters(-10.981),
                                 Units.inchesToMeters(8.44)),
-              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
-    /**
-     * Center Camera
-     */
-    CENTER_CAM("center",
-               new Rotation3d(0, Units.degreesToRadians(18), 0),
-               new Translation3d(Units.inchesToMeters(-4.628),
-                                 Units.inchesToMeters(-10.687),
-                                 Units.inchesToMeters(16.129)),
-               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
     /**
      * Latency alert to use when high latency is detected.

@@ -40,7 +40,7 @@ public class ManualElevatorStickCommand extends Command {
       pivotSpeed = MathUtil.clamp(pivotSpeed, -0.4, 0.53);
       //pivotSpeed += elevatorSubsystem.elevatorFeedForward.getKs();
       //pivotSpeed += elevatorSubsystem.elevatorFeedForward.getKg();
-      pivotSpeed += 0.03;
+      pivotSpeed += 0.025;
       elevatorSubsystem.RElevator.set(-pivotSpeed);
     }
     // if(coralSubsystem.holdingCoralLeft){

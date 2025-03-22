@@ -55,7 +55,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorSensor = new DigitalInput(Constants.ElevatorConstants.elevatorDetectorID);
     elevatorSensorShuffleBoard = tab.add("Elevator Sensor", false).getEntry();
 
-    elevatorFeedForward = Constants.ElevatorConstants.elevatorFeedForward;
+    //elevatorFeedForward = Constants.ElevatorConstants.elevatorFeedForward;
   }
 
   @Override

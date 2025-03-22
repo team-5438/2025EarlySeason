@@ -27,6 +27,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -45,6 +46,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.DrivebaseConstants;
+import frc.robot.Constants.DrivebaseConstants.TargetSide;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -229,6 +232,46 @@ public class SwerveSubsystem extends SubsystemBase
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
+  }
+
+ /*
+   * driveToReefScore - takes an aprilTagID and a target side
+   *   to make testing in the simulator easier when there is no live
+   *   vision.
+   */
+  public Command alignToReefScore(int aprilTag, TargetSide scoringSide){
+    Transform2d robotOffset;
+    if (scoringSide == DrivebaseConstants.TargetSide.LEFT){
+      robotOffset = new Transform2d(DrivebaseConstants.ReefXDistance,
+                        DrivebaseConstants.ReefLeftYOffset,Rotation2d.kPi);
+    }
+    else {
+      robotOffset = new Transform2d(DrivebaseConstants.ReefXDistance,
+                        DrivebaseConstants.ReefRightYOffset,Rotation2d.kPi);
+    }
+    
+    Pose2d newPose = Vision.getAprilTagPose(aprilTag, robotOffset);
+    return(driveToPose(newPose));
+  }
+  /*
+   * align to Score - align to either the left or right of the april tag on the coral reef. 
+   * make sure the returned target is a valid tag for our alliance - This method
+   * uses live vision to deterion the april tag target in view of the cameras
+   */
+  public Command alignToReefScore(TargetSide scoringSide)
+  {
+    return run(() -> {
+       //ask vision for the best reef target in view from the front
+       //cameras
+       //int aprilTag = vision.getCurrentReefTarget();
+       int aprilTag = vision.getBestReefTarget();
+    
+       //If we got a valid april tag target, then drive to an offset from that
+       //target based on our robot dimensions
+       if (aprilTag > 0){
+          alignToReefScore(aprilTag,scoringSide);
+       }
+      });
   }
 
   /**
