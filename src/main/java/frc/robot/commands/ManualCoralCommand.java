@@ -33,12 +33,13 @@ public class ManualCoralCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(coralSubsystem.coralEncoderDistance >= 0.97 && operator.getLeftY() > 0) coralSubsystem.coralPivot.set(0);
+    if((coralSubsystem.coralEncoderDistance <= 0.160 && operator.getLeftY() < 0) || (coralSubsystem.coralEncoderDistance >= 0.485 && operator.getLeftY() > 0)) coralSubsystem.coralPivot.set(0);
+    else{
+      pivotSpeed = MathUtil.applyDeadband(operator.getLeftY(), Constants.Operator.leftStick.Y);
+      pivotSpeed = MathUtil.clamp(pivotSpeed, -0.5, 0.2);
 
-    pivotSpeed = MathUtil.applyDeadband(operator.getLeftY(), Constants.Operator.leftStick.Y);
-    pivotSpeed = MathUtil.clamp(pivotSpeed, -0.1, 0.6);
-
-    coralSubsystem.coralPivot.set(pivotSpeed);
+      coralSubsystem.coralPivot.set(pivotSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.

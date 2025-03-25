@@ -29,15 +29,14 @@ public class SetElevatorCommand extends Command {
   @Override
   public void execute() {
     //elevatorSubsystem.LElevator.set(elevatorSubsystem.elevatorPID.calculate(elevatorSubsystem.ElevatorEncoderDistance, encoderSetPoint));
-    elevatorSubsystem.RElevator.set(-elevatorSubsystem.elevatorPID.calculate(elevatorSubsystem.elevatorEncoderDistance, encoderSetPoint+3.3));
+    elevatorSubsystem.elevator.set(-elevatorSubsystem.elevatorPID.calculate(elevatorSubsystem.elevatorEncoderDistance, encoderSetPoint));
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevatorSubsystem.RElevator.set(-0.03);
-    //elevatorSubsystem.RElevator.set(-elevatorSubsystem.elevatorPID.calculate(elevatorSubsystem.elevatorEncoderDistance, setPointFinal));
+    elevatorSubsystem.elevator.set(-0.025);
   }
 
   // Returns true when the command should end.

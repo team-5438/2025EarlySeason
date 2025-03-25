@@ -25,7 +25,7 @@ public final class Constants {
     /* NOTE: this is a PS5 Controller */
     1, /* id */
     new StickDeadband(0.1, 0.1), /* left stick deadband */
-    new StickDeadband(0.1, 0.1)); /* right stick deadband+ */
+    new StickDeadband(0.15, 0.15)); /* right stick deadband+ */
 
   public static final Controller Driver = new Controller(
     /* NOTE: this is a Xbox Controller */
@@ -54,39 +54,38 @@ public final class Constants {
   public static class ElevatorConstants{
 
     /*-----------CAN IDs------------ */
-    public static final int LElevatorID = 6;
-    public static final int RElevatorID = 7;
+    public static final int elevatorID = 7;
 
     /*-----------DIO PORTS------------- */
-    public static final int ElevatorEncoderPortA = 0;
-    public static final int ElevatorEncoderPortB = 1;
+    public static final int elevatorEncoderPortA = 0;
+    public static final int elevatorEncoderPortB = 1;
     public static final int elevatorDetectorID = 9;
 
     /*-----------PID STUFF------------ */
-    public static final PIDController ElevatorPID = new PIDController(0.24, 0, 0.01);
-    public static final double elevatorTolerance = 0.5;
+    public static final PIDController ElevatorPID = new PIDController(0.17, 0, 0.01);
+    public static final double elevatorTolerance = 0.25;
 
     /* -----------PRESETS------------- */
     public static final double ElevatorL4 = 53.2;   //52 <- old value
-    public static final double ElevatorL3 = 30;   //27 <- old value
-    public static final double ElevatorL2 = 13;   //11 <- old value
+    public static final double ElevatorL3 = 41.72;   //27 <- old value
+    public static final double ElevatorL2 = 25;   //11 <- old value
     public static final double ElevatorL1 = 4;    //2 <- old value
-    public static final double elevatorIntake = 10;
+    public static final double elevatorIntake = 14.7;
   }
 
   public static class CoralConstants{
     /* ----------CAN IDs------------ */
     public static final int coralPivotID = 8;   //NEW CORAL PIVOT ID
-    //public static final int coralSpinnyID = 14;   //NEW CORAL SPINNY ID
+    public static final int coralSpinnyID = 14;   //NEW CORAL SPINNY ID
 
     /* ----------DIO PORTS----------- */
     public static final int coralDetectorID = 4;
     public static final int coralEncoderID = 6;
 
     /* ----------PID STUFF----------- */
-    public static final double coralTolerance = 0.05;
-    public static final PIDController coralPIDWithout = new PIDController(0, 0, 0); //pid without a coral
-    public static final PIDController coralPIDWith = new PIDController(0, 0, 0);  //pid with a coral
+    public static final double coralTolerance = 0.003;
+    public static final PIDController coralPIDWithout = new PIDController(6, 0, 0.1); //pid without a coral
+    public static final PIDController coralPIDWith = new PIDController(6.5, 0, 0.1);  //pid with a coral
   }
 
   public static class ClimberConstants{

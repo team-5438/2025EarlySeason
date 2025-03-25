@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +20,7 @@ import frc.robot.Constants;
 
 public class CoralSubsystem extends SubsystemBase {
   /** Creates a new TempCoralSubsystem. */
-  public SparkMax coralPivot;
+  public TalonFX coralPivot;
   public SparkMax coralSpinny;
 
   public DutyCycleEncoder coralEncoder;
@@ -35,8 +37,8 @@ public class CoralSubsystem extends SubsystemBase {
   public boolean coralDetectorValue;
 
   public CoralSubsystem() {
-    coralPivot = new SparkMax(Constants.CoralConstants.coralPivotID, MotorType.kBrushless);
-    //coralSpinny = new SparkMax(Constants.CoralConstants.coralSpinnyID, MotorType.kBrushless);
+    coralPivot = new TalonFX(Constants.CoralConstants.coralPivotID);
+    coralSpinny = new SparkMax(Constants.CoralConstants.coralSpinnyID, MotorType.kBrushless);
 
     coralEncoder = new DutyCycleEncoder(Constants.CoralConstants.coralEncoderID);
     coralDetector = new DigitalInput(Constants.CoralConstants.coralDetectorID);

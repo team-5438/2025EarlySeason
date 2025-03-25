@@ -23,8 +23,8 @@ import frc.robot.Constants;
 public class ElevatorSubsystem extends SubsystemBase {
   public ShuffleboardTab tab;
   public TalonFX LElevator;
-  public TalonFX RElevator;
-  //public final Follower RElevator;
+  public TalonFX elevator;
+  //public final Follower elevator;
   public Encoder elevatorEncoder;
   public PIDController elevatorPID;
 
@@ -43,9 +43,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElavatorSubsystem. */
   public ElevatorSubsystem() {
     //LElevator = new TalonFX(Constants.ElevatorConstants.LElevatorID);
-    RElevator = new TalonFX(Constants.ElevatorConstants.RElevatorID);
+    elevator = new TalonFX(Constants.ElevatorConstants.elevatorID);
 
-    elevatorEncoder = new Encoder(Constants.ElevatorConstants.ElevatorEncoderPortA, Constants.ElevatorConstants.ElevatorEncoderPortB);
+    elevatorEncoder = new Encoder(Constants.ElevatorConstants.elevatorEncoderPortA, Constants.ElevatorConstants.elevatorEncoderPortB);
     elevatorEncoder.setDistancePerPulse(46.0/8192.0);
     elevatorPID = Constants.ElevatorConstants.ElevatorPID;
 

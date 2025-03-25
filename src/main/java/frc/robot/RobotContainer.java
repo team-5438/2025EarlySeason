@@ -120,6 +120,7 @@ public class RobotContainer {
 
     driver.y().onTrue(new InstantCommand(swerveSubsystem::zeroGyro)); //zero gyro command
     driver.a().onTrue(new InstantCommand(elevatorSubsystem.elevatorEncoder::reset));  //reset elevator
+    driver.x().whileTrue(new InstantCommand((swerveSubsystem::getPose)));
 
     // driver.a().and(driver.leftBumper()).whileTrue(swerveSubsystem.alignToReefScore(20, TargetSide.LEFT));
     // driver.x().and(driver.rightBumper()).whileTrue(swerveSubsystem.alignToReefScore(20,TargetSide.RIGHT));
@@ -133,8 +134,11 @@ public class RobotContainer {
     // driver.a().and(driver.leftBumper()).whileTrue(swerveSubsystem.alignToReefScore(6,TargetSide.LEFT));
     // driver.a().and(driver.rightBumper()).whileTrue(swerveSubsystem.alignToReefScore(6,TargetSide.RIGHT));
 
-    driver.leftBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.LEFT));
-    driver.rightBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.RIGHT));
+    // driver.leftBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.LEFT));
+    // driver.rightBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.RIGHT));
+
+    driver.leftBumper().whileTrue(Commands.run(()->{swerveSubsystem.alignToReefScore(()-> swerveSubsystem.getReefTargetTagID(), TargetSide.LEFT).schedule();}));
+    driver.rightBumper().whileTrue(Commands.run(()->{swerveSubsystem.alignToReefScore(()-> swerveSubsystem.getReefTargetTagID(), TargetSide.RIGHT).schedule();}));
 
     operator.triangle().onTrue(new SequentialCommandGroup(   //L4 preset
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL4)
@@ -172,16 +176,16 @@ public class RobotContainer {
     operator.touchpad().onTrue(new SequentialCommandGroup(          //intake preset
         new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.elevatorIntake),
         Commands.waitSeconds(.5),
-        Commands.print("Finished elevator"),
+        Commands.print("Finished elevator"))
         // new SetCoralCommand(coralSubsystem, 0.82, false),
         // Commands.print("finished coral"),
-        new SpinCoralUntilHeldCommand(coralSubsystem, -0.15).withTimeout(10),
-        Commands.print("spun coral"))
+        //new SpinCoralUntilHeldCommand(coralSubsystem, -0.15).withTimeout(10),
+        //Commands.print("spun coral"))
     );
     operator.povLeft().whileTrue(new ManualClimberCommand(climberSubsystem, -0.9));
     operator.povRight().whileTrue(new ManualClimberCommand(climberSubsystem, 0.9));
 
-    operator.PS().whileTrue(new SetCoralCommand(coralSubsystem, 0.6, false));
+    operator.PS().onTrue(new SetCoralCommand(coralSubsystem, 0.329));
     
   }
 
@@ -190,7 +194,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L4", new SequentialCommandGroup(
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL4),
       Commands.waitSeconds(0.5),
-      new SetCoralCommand(coralSubsystem, 0.5, false),
+      new SetCoralCommand(coralSubsystem, 0.5),
       Commands.waitSeconds(0.5),
       new SpinCoral(coralSubsystem, 0.5).withTimeout(2)
       //new SetCoralCommand(coralSubsystem, 0.5, true)
@@ -198,7 +202,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3", new SequentialCommandGroup(
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL3),
       Commands.waitSeconds(0.5),
-      new SetCoralCommand(coralSubsystem, 0.5, false),
+      new SetCoralCommand(coralSubsystem, 0.5),
       Commands.waitSeconds(0.5),
       new SpinCoral(coralSubsystem, 0.5).withTimeout(2)
       //new SetCoralCommand(coralSubsystem, 0.5, true)
@@ -206,7 +210,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", new SequentialCommandGroup(
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL2),
       Commands.waitSeconds(0.5),
-      new SetCoralCommand(coralSubsystem, 0.80, false),
+      new SetCoralCommand(coralSubsystem, 0.80),
       Commands.waitSeconds(0.5),
       new SpinCoral(coralSubsystem, 0.5).withTimeout(2)
       //new SetCoralCommand(coralSubsystem, 0.5, true)
@@ -214,7 +218,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L1", new SequentialCommandGroup(
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL1),
       Commands.waitSeconds(0.5),
-      new SetCoralCommand(coralSubsystem, 0.5, false),
+      new SetCoralCommand(coralSubsystem, 0.5),
       Commands.waitSeconds(0.5),
       new SpinCoral(coralSubsystem, 0.5).withTimeout(2)
       //new SetCoralCommand(coralSubsystem, 0.5, true)
@@ -222,7 +226,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("coral station", new SequentialCommandGroup(
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.elevatorIntake),
       Commands.waitSeconds(0.5),
-      new SetCoralCommand(coralSubsystem, 0.82, false)
+      new SetCoralCommand(coralSubsystem, 0.82)
     ));
     NamedCommands.registerCommand("drop coral", new StartEndCommand(() -> coralSubsystem.coralSpinny.set(-0.8), () -> coralSubsystem.coralSpinny.set(0)).withTimeout(3));
 

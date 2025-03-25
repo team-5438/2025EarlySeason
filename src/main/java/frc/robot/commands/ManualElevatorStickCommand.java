@@ -33,15 +33,15 @@ public class ManualElevatorStickCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if((elevatorSubsystem.elevatorEncoderDistance <= 0.7 && operator.getRightY() < 0) || (elevatorSubsystem.elevatorEncoderDistance >= 53 && operator.getRightY() > 0)){
-      elevatorSubsystem.RElevator.set(0);
+    if((elevatorSubsystem.elevatorEncoderDistance <= 0.7 && operator.getRightY() > 0) || (elevatorSubsystem.elevatorEncoderDistance >= 53 && operator.getRightY() < 0)){
+      elevatorSubsystem.elevator.set(0);
     } else{
-      pivotSpeed = MathUtil.applyDeadband(operator.getRightY(), Constants.Operator.rightStick.Y);
+      pivotSpeed = MathUtil.applyDeadband(-operator.getRightY(), Constants.Operator.rightStick.Y);
       pivotSpeed = MathUtil.clamp(pivotSpeed, -0.4, 0.53);
       //pivotSpeed += elevatorSubsystem.elevatorFeedForward.getKs();
       //pivotSpeed += elevatorSubsystem.elevatorFeedForward.getKg();
       pivotSpeed += 0.025;
-      elevatorSubsystem.RElevator.set(-pivotSpeed);
+      elevatorSubsystem.elevator.set(-pivotSpeed);
     }
     // if(coralSubsystem.holdingCoralLeft){
     //   pivotSpeedRight = MathUtil.applyDeadband(-operator.getRightY(), Constants.Operator.rightStick.Y);
@@ -66,7 +66,7 @@ public class ManualElevatorStickCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     //coralSubsystem.coralPivotRight.set(0);
-    elevatorSubsystem.RElevator.set(0);
+    elevatorSubsystem.elevator.set(0);
   }
 
   // Returns true when the command should end.

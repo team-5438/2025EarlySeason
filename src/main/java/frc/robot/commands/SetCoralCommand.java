@@ -15,7 +15,7 @@ public class SetCoralCommand extends Command {
   private CoralSubsystem coralSubsystem;
   private double encoderSetPoint;
   /** Creates a new CoralPreset. */
-  public SetCoralCommand(CoralSubsystem coralSubsystem, double encoderSetPoint, boolean right) {
+  public SetCoralCommand(CoralSubsystem coralSubsystem, double encoderSetPoint) {
     this.coralSubsystem = coralSubsystem;
     this.encoderSetPoint = encoderSetPoint;
     // Use addRequirements() here to declare subsystem dependencies.

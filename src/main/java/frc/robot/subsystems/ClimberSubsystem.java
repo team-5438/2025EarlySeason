@@ -16,7 +16,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public TalonFX climber;
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
-    climber = new TalonFX(Constants.ClimberConstants.climberID);
+    //climber = new TalonFX(Constants.ClimberConstants.climberID);
   }
 
   @Override
