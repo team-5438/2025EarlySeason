@@ -20,6 +20,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveSubsystemOG;
 import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveDrive;
 
@@ -137,8 +138,9 @@ public class RobotContainer {
     // driver.leftBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.LEFT));
     // driver.rightBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.RIGHT));
 
-    driver.leftBumper().whileTrue(Commands.run(()->{swerveSubsystem.alignToReefScore(()-> swerveSubsystem.getReefTargetTagID(), TargetSide.LEFT).schedule();}));
-    driver.rightBumper().whileTrue(Commands.run(()->{swerveSubsystem.alignToReefScore(()-> swerveSubsystem.getReefTargetTagID(), TargetSide.RIGHT).schedule();}));
+    driver.leftBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.LEFT));
+    driver.rightBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.RIGHT));
+    driver.x().onTrue(Commands.runOnce(() -> System.out.println(swerveSubsystem.getPose())));
 
     operator.triangle().onTrue(new SequentialCommandGroup(   //L4 preset
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL4)
