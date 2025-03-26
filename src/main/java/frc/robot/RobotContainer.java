@@ -34,6 +34,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -121,7 +123,7 @@ public class RobotContainer {
 
     driver.y().onTrue(new InstantCommand(swerveSubsystem::zeroGyro)); //zero gyro command
     driver.a().onTrue(new InstantCommand(elevatorSubsystem.elevatorEncoder::reset));  //reset elevator
-    driver.x().whileTrue(new InstantCommand((swerveSubsystem::getPose)));
+    //driver.x().whileTrue(new InstantCommand((swerveSubsystem::getPose)));
 
     // driver.a().and(driver.leftBumper()).whileTrue(swerveSubsystem.alignToReefScore(20, TargetSide.LEFT));
     // driver.x().and(driver.rightBumper()).whileTrue(swerveSubsystem.alignToReefScore(20,TargetSide.RIGHT));
@@ -138,9 +140,12 @@ public class RobotContainer {
     // driver.leftBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.LEFT));
     // driver.rightBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.RIGHT));
 
-    driver.leftBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.LEFT));
-    driver.rightBumper().whileTrue(swerveSubsystem.alignToReefScore(TargetSide.RIGHT));
+    driver.leftBumper().onTrue(Commands.runOnce(()->{swerveSubsystem.alignToReefScore(()->swerveSubsystem.getReefTargetTagID(), TargetSide.LEFT).schedule();}));
+    driver.rightBumper().onTrue(Commands.runOnce(()->{swerveSubsystem.alignToReefScore(()->swerveSubsystem.getReefTargetTagID(), TargetSide.RIGHT).schedule();}));
     driver.x().onTrue(Commands.runOnce(() -> System.out.println(swerveSubsystem.getPose())));
+    // driver.b().onTrue(new InstantCommand(() -> swerveSubsystem.driveToPose(new Pose2d(0.0, 4.0, new Rotation2d(-0.25)))));
+    driver.b().onTrue(swerveSubsystem.driveToPose(new Pose2d(0.0, 4.0, new Rotation2d(-0.25))));
+    //driver.povDown().onTrue(Commands.runOnce(() -> System.out.println(vision.getBestReefTarget())));
 
     operator.triangle().onTrue(new SequentialCommandGroup(   //L4 preset
       new SetElevatorCommand(elevatorSubsystem, Constants.ElevatorConstants.ElevatorL4)

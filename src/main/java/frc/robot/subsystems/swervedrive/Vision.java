@@ -23,12 +23,15 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import java.awt.Desktop;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+//import org.littletonrobotics.junction.AutoLogOutput;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -54,30 +57,30 @@ public class Vision
    * April Tag Field Layout of the year.
    */
   public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(
-    AprilTagFields.k2025ReefscapeWelded);
+     AprilTagFields.k2025ReefscapeWelded);
+    
+
   /**
    * Ambiguity defined as a value between (0,1). Used in {@link Vision#filterPose}.
    */
-  private final double maximumAmbiguity = 0.25;
+  private final       double              maximumAmbiguity                = 0.25;
   /**
    * Photon Vision Simulation
    */
-  public VisionSystemSim visionSim;
-  /**
-   * Count of times that the odom thinks we're more than 10meters away from the april tag.
-   */
-  private double longDistangePoseEstimationCount = 0;
+  public              VisionSystemSim     visionSim;
+  
   /**
    * Current pose from the pose estimator using wheel odometry.
    */
-  private Supplier<Pose2d> currentPose;
+  private             Supplier<Pose2d>    currentPose;
   /**
    * Field from {@link swervelib.SwerveDrive#field}
    */
-  private Field2d field2d;
+  private             Field2d             field2d;
 
+  //@AutoLogOutput
   int targetID;
-
+ 
   /**
    * Constructor for the Vision class.
    *
@@ -88,6 +91,7 @@ public class Vision
   {
     this.currentPose = currentPose;
     this.field2d = field;
+    
 
     if (Robot.isSimulation())
     {
@@ -102,7 +106,7 @@ public class Vision
       openSimCameraViews();
     }
   }
-
+  
   /**
    * Calculates a target pose relative to an AprilTag on the field.
    *
@@ -123,7 +127,6 @@ public class Vision
     }
 
   }
-
   /*
    * isValidTargetFor Scoring: is this a valid target to score on?
    * Target must be within a sight of the robot and a valid target
@@ -151,15 +154,15 @@ public class Vision
   public int getCamerasTargetID(Cameras camera){
     PhotonTrackedTarget target;
 
-    System.out.println("Vision:getCamerasTargetID: Check Camera");
+    //System.out.println("Vision:getCamerasTargetID: Check Camera");
     var results = camera.getLatestResult();
     if (!results.isEmpty()){
       var result = results.orElse(null);
       if (result == null) return(0);
       if (result.hasTargets()){
-         System.out.println("   Camera found a result target");
+         //System.out.println("   Camera found a result target");
          target = result.getBestTarget();
-         System.out.println("   Camera found a best target getting ID");
+        // System.out.println("   Camera found a best target getting ID");
          return(target.getFiducialId());
       }
     }
@@ -174,27 +177,24 @@ public class Vision
     for (Cameras camera : Cameras.values()){
       if (camera.equals(Cameras.LEFT_CAM)){
 
-        System.out.println("Vision:GetBestReefTarget: Check FrontLeft Camera");
+        //System.out.println("Vision:GetBestReefTarget: Check FrontLeft Camera");
         targetID = getCamerasTargetID(camera);
         
         if (isValidTargetForScoring(targetID)){
-          System.out.println("  Return frontLeftTarget ID:" + targetID);
           return(targetID);
         }
       }
       if (camera.equals(Cameras.RIGHT_CAM)){
-        System.out.println("Vision:GetBestReefTarget: Check FrontRight Camera");
+        //System.out.println("Vision:GetBestReefTarget: Check FrontRight Camera");
         targetID = getCamerasTargetID(camera);
         if (isValidTargetForScoring(targetID)){
-          System.out.println("  Return frontRightTarget ID:" + targetID);
           return(targetID);
         }
       }
     }
-    System.out.println("Vision:GetBestReefTarget: NO APRIL TAG TARGET FOUND return 0");
+    //System.out.println("Vision:GetBestReefTarget: NO APRIL TAG TARGET FOUND return 0");
     return(0);
   }
-
   /**
    * Update the pose estimation inside of {@link SwerveDrive} with all of the given poses.
    *
@@ -254,54 +254,6 @@ public class Vision
     }
     return poseEst;
   }
-
-
-  /**
-   * Filter pose via the ambiguity and find best estimate between all of the camera's throwing out distances more than
-   * 10m for a short amount of time.
-   *
-   * @param pose Estimated robot pose.
-   * @return Could be empty if there isn't a good reading.
-   */
-  @Deprecated(since = "2024", forRemoval = true)
-  private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
-  {
-    if (pose.isPresent())
-    {
-      double bestTargetAmbiguity = 1; // 1 is max ambiguity
-      for (PhotonTrackedTarget target : pose.get().targetsUsed)
-      {
-        double ambiguity = target.getPoseAmbiguity();
-        if (ambiguity != -1 && ambiguity < bestTargetAmbiguity)
-        {
-          bestTargetAmbiguity = ambiguity;
-        }
-      }
-      //ambiguity to high dont use estimate
-      if (bestTargetAmbiguity > maximumAmbiguity)
-      {
-        return Optional.empty();
-      }
-
-      //est pose is very far from recorded robot pose
-      if (PhotonUtils.getDistanceToPose(currentPose.get(), pose.get().estimatedPose.toPose2d()) > 1)
-      {
-        longDistangePoseEstimationCount++;
-
-        //if it calculates that were 10 meter away for more than 10 times in a row its probably right
-        if (longDistangePoseEstimationCount < 10)
-        {
-          return Optional.empty();
-        }
-      } else
-      {
-        longDistangePoseEstimationCount = 0;
-      }
-      return pose;
-    }
-    return Optional.empty();
-  }
-
 
   /**
    * Get distance of the robot from the AprilTag pose.
@@ -403,13 +355,39 @@ public class Vision
     field2d.getObject("tracked targets").setPoses(poses);
   }
 
+
+  public void leftAlign(Cameras camera){
+    camera.camera.getAllUnreadResults().get(0).getBestTarget().getYaw();
+  }
+
   /**
-   * Camera Enum to select each camera
+   * Camera   to select each camera
    */
-  enum Cameras
+  public enum Cameras
   {
+    /*
+     * Back Right Camera
+     
+    BackRight("BackRight",
+             new Rotation3d(0, Math.toRadians(30), Math.toRadians(160)),  //new camera needs 140
+             new Translation3d(Units.inchesToMeters(-10.6488),
+                               Units.inchesToMeters(-11.957134),
+                               Units.inchesToMeters(6.03258)),
+             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+    */
     /**
-     * Left Camera
+    /**
+     * Back Left Camera
+     
+    BackLeft("BackLeft",
+             new Rotation3d(0, Math.toRadians(30), Math.toRadians(200)),
+             new Translation3d(Units.inchesToMeters(-10.6488),
+                               Units.inchesToMeters(11.957134),
+                               Units.inchesToMeters(6.03258)),
+             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+    */
+    /**
+     * Front Left Camera
      */
     LEFT_CAM("left",
              new Rotation3d(0, Math.toRadians(104), Math.toRadians(-15)),
@@ -422,7 +400,7 @@ public class Vision
      */
     RIGHT_CAM("right",
               new Rotation3d(0, Math.toRadians(104), Math.toRadians(15)),
-              new Translation3d(Units.inchesToMeters(-8.345),
+              new Translation3d(Units.inchesToMeters(8.345),
                                 Units.inchesToMeters(-10.981),
                                 Units.inchesToMeters(4.855)),
               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
@@ -435,6 +413,7 @@ public class Vision
      * Camera instance for comms.
      */
     public final  PhotonCamera                 camera;
+
     /**
      * Pose estimator for camera.
      */
@@ -488,6 +467,7 @@ public class Vision
       latencyAlert = new Alert("'" + name + "' Camera is experiencing high latency.", AlertType.kWarning);
 
       camera = new PhotonCamera(name);
+
 
       // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
       robotToCamTransform = new Transform3d(robotToCamTranslation, robotToCamRotation);
@@ -696,5 +676,4 @@ public class Vision
 
 
   }
-
 }

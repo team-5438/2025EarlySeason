@@ -37,8 +37,7 @@ public final class Constants {
   public static final double MAX_SPEED  = 4.5; //in meters/sec
 
   public static class DrivebaseConstants{
-      public static double DriveFastScale = 1
-      ;
+      public static double DriveFastScale = 1;
       public static double DrivePrecisionScale = 0.35;
       // Hold time on motor brakes when disabled
       public static final double WHEEL_LOCK_TIME = 10.0; // seconds
