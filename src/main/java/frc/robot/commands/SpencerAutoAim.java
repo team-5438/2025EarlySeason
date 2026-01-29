@@ -4,36 +4,46 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.CoralConstants;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.Constants;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SpinCoral extends Command {
-  /** Creates a new OuttakeCoral. */
-  private CoralSubsystem coralSubsystem;
-  private double speed;
-  public SpinCoral(CoralSubsystem coralSubsystem, double speed) {
-    this.coralSubsystem = coralSubsystem;
-    this.speed = speed;
+public class SpencerAutoAim extends Command {
+  SwerveSubsystem swerveSubsystem;
+  DoubleSupplier translationX;
+  DoubleSupplier translationY;
+  DoubleSupplier rightStickRotation;
+  PIDController anglePID;
+  /** Creates a new SpencerAutoAim. */
+  public SpencerAutoAim(SwerveSubsystem swerveSubsystem, DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rightStickRotation) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.swerveSubsystem = swerveSubsystem;
+    this.translationX = translationX;
+    this.translationY = translationY;
+    this.rightStickRotation = rightStickRotation;
+    anglePID = Constants.anglePID;
+    addRequirements(swerveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //coralSubsystem.coralSpinny.set(speed);
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    //coralSubsystem.coralSpinny.set(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

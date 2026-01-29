@@ -76,8 +76,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.coralSubsystem.setDefaultCommand(m_robotContainer.manualCoralCommand);
-    m_robotContainer.elevatorSubsystem.setDefaultCommand(m_robotContainer.manualElevatorStickCommand);
+   // m_robotContainer.coralSubsystem.setDefaultCommand(m_robotContainer.manualCoralCommand);
+   // m_robotContainer.elevatorSubsystem.setDefaultCommand(m_robotContainer.manualElevatorStickCommand);
   }
 
   /** This function is called periodically during operator control. */

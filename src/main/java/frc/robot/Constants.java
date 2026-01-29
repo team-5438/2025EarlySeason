@@ -21,6 +21,7 @@ import frc.robot.utils.Controller;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final PIDController anglePID = new PIDController(1, 0, 0.2);
   public static final Controller Operator = new Controller(
     /* NOTE: this is a PS5 Controller */
     1, /* id */
