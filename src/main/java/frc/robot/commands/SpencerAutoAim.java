@@ -4,9 +4,13 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -18,6 +22,9 @@ public class SpencerAutoAim extends Command {
   DoubleSupplier translationY;
   DoubleSupplier rightStickRotation;
   PIDController anglePID;
+  Pose2d robotPose2d;
+  double robotX;
+  double robotY;
   /** Creates a new SpencerAutoAim. */
   public SpencerAutoAim(SwerveSubsystem swerveSubsystem, DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rightStickRotation) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,7 +45,20 @@ public class SpencerAutoAim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    robotPose2d = swerveSubsystem.getPose();
+    robotX = robotPose2d.getMeasureX().in(Meters);
+    robotY = robotPose2d.getMeasureY().in(Meters);
+    /*
+     * get robot pose
+     * get robot x and y
+     * subtract robot x from hoop x
+     * subtract robot y from hoop y
+     * arctan(diff) = desired angle
+     * (edge case: if diffX = 0, then we know we must point at 0 theta)
+     * PID get to desired angle
+     * 
+     */
+
   }
 
   // Called once the command ends or is interrupted.
