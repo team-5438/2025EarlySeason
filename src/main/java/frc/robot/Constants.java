@@ -22,6 +22,8 @@ import frc.robot.utils.Controller;
  */
 public final class Constants {
   public static final PIDController anglePID = new PIDController(1, 0, 0.2);
+  public static final double HUB_X = 4.62534; //x of hub in meters  
+  public static final double HUB_Y = 4.034536; //y of hub in meters
   public static final Controller Operator = new Controller(
     /* NOTE: this is a PS5 Controller */
     1, /* id */

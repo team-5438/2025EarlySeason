@@ -25,6 +25,10 @@ public class SpencerAutoAim extends Command {
   Pose2d robotPose2d;
   double robotX;
   double robotY;
+  double diffX;
+  double diffY;
+  double desiredAngle;
+  double PIDOutput;
   /** Creates a new SpencerAutoAim. */
   public SpencerAutoAim(SwerveSubsystem swerveSubsystem, DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rightStickRotation) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,15 +43,25 @@ public class SpencerAutoAim extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    DoubleSupplier pIDOutputDoubleSupplier = () -> {
+      robotPose2d = swerveSubsystem.getPose();
+      robotX = robotPose2d.getMeasureX().in(Meters);
+      robotY = robotPose2d.getMeasureY().in(Meters);
+      diffX = Constants.HUB_X - robotX;
+      diffY = Constants.HUB_Y - robotY;
+      desiredAngle = (diffX == 0) ? 0 : Math.atan2(diffY, diffX);
+      PIDOutput = anglePID.calculate(robotPose2d.getRotation().getRadians(), desiredAngle);
+      return PIDOutput*0.2;
+    };                
+    swerveSubsystem.driveCommand(translationX, translationY, pIDOutputDoubleSupplier);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    robotPose2d = swerveSubsystem.getPose();
-    robotX = robotPose2d.getMeasureX().in(Meters);
-    robotY = robotPose2d.getMeasureY().in(Meters);
+
+
+
     /*
      * get robot pose
      * get robot x and y
@@ -68,6 +82,9 @@ public class SpencerAutoAim extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(rightStickRotation.getAsDouble() != 0){
+      return true;
+    }
     return false;
   }
 }

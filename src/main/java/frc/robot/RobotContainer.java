@@ -9,6 +9,7 @@ package frc.robot;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DrivebaseConstants.TargetSide;
 import frc.robot.commands.ManualClimberCommand;
+import frc.robot.commands.SpencerAutoAim;
 // import frc.robot.commands.ManualCoralCommand;
 // import frc.robot.commands.ManualElevatorStickCommand;
 // import frc.robot.commands.MusicCommand;
@@ -52,6 +53,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -117,6 +119,19 @@ public class RobotContainer {
 
     /* rotation controls for the robot */
     DoubleSupplier angularRotationX = () -> -MathUtil.applyDeadband(driver.getRawAxis(4), Constants.Driver.rightStick.X) / speedMod.getAsDouble();
+    
+    SpencerAutoAim spencerAutoAim = new SpencerAutoAim(swerveSubsystem, translationX, translationY, angularRotationX);
+    
+    driver.x().toggleOnTrue(spencerAutoAim);
+    /*
+     * 
+     * 
+     * if in autoaim mode:
+     * then autoAngularRotation = output of command
+     * pass autoAngularRotation into driverControls
+     * 
+     * else pass angularRotationX into driverControls
+     */
 
     Command driverControls = swerveSubsystem.driveCommand(translationX, translationY, angularRotationX);
     swerveSubsystem.setDefaultCommand(driverControls);
